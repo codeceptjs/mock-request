@@ -266,6 +266,7 @@ class MockRequest {
    *
    */
   async mockRequest(method, oneOrMoreUrls, dataOrStatusCode, additionalData = null) {
+    this._initializeConnector();
     await this.connector.checkConnection();
     await this.connector.mockRequest(...arguments)
   }
