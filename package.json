@@ -1,0 +1,29 @@
+{
+  "name": "@codeceptjs/mock-request",
+  "version": "0.1.0",
+  "description": "Mocking requests with PollyJS for CodeceptJS",
+  "main": "index.js",
+  "scripts": {
+    "publish": "npm publish --access public",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "npx documentation readme index.js --section=API --shallow"
+  },
+  "keywords": [
+    "mock",
+    "pollyjs",
+    "codeceptjs",
+    "http-mock"
+  ],
+  "author": "Michael Bodnarchuk @davert",
+  "license": "ISC",
+  "devDependencies": {
+    "puppeteer": "^2.1.1",
+    "webdriverio": "^5.22.3",
+    "documentation": "^11.0.1"
+  },
+  "dependencies": {
+    "@pollyjs/adapter-puppeteer": "^4.0.2",
+    "@pollyjs/core": "^4.0.2",
+    "@pollyjs/persister-fs": "^4.0.2"
+  }
+}
