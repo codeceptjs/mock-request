@@ -1,4 +1,5 @@
 const pollyWebDriver = require('../scripts/clientSide');
+const { output } = codeceptjs;
 
 class WebDriverConnector {
 
@@ -52,7 +53,11 @@ class WebDriverConnector {
 
   async disconnect() {
     if (!this.browser) return; // already disconnected
-    await this.browser.execute(pollyWebDriver.stopMocking);
+    try {
+      await this.browser.execute(pollyWebDriver.stopMocking);
+    } catch (err) {
+      output.log('Disconnected, cant clear');
+    }
     delete this.browser;
   }
 }

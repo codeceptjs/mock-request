@@ -62,7 +62,7 @@ class PuppeteerConnector {
       this.polly.server,
       method,
       oneOrMoreUrls,
-      this.config.url || puppeteerConfigUrl,
+      this.options.url || puppeteerConfigUrl,
     );
 
     if (typeof dataOrStatusCode === 'number') {
