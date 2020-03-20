@@ -1,0 +1,39 @@
+name: Puppeteer Mocking
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Start selenoid
+      uses: Xotabu4/selenoid-github-action@v1        
+    - name: install required packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install php
+    - name: npm install
+      run: |
+        npm install
+    - name: start a server
+      run: "php -S 127.0.0.1:8000 -t node_modules/codeceptjs/test/data/app &"
+    - name: run Chrome tests
+      run: "npx codecept.js run -c test/codecept.webdriver.conf.js --debug"
+      
