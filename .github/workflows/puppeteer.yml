@@ -18,7 +18,7 @@ jobs:
         node-version: [12.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -29,11 +29,15 @@ jobs:
         sudo apt-get install libgbm-dev libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgdk-pixbuf2.0-0 libegl1 libgles2 libevent-2.1-6 libnotify4 libxslt1.1
         sudo apt-get install xvfb
         sudo apt-get install php
+    - uses: actions/checkout@v2        
+      with:
+        repository: git@github.com:Codeception/CodeceptJS.git
+        path: codeceptjs
     - name: npm install
       run: |
         npm install
     - name: start a server
-      run: "php -S 127.0.0.1:8000 -t node_modules/codeceptjs/test/data/app &"
+      run: "php -S 127.0.0.1:8000 -t codeceptjs/test/data/app &"
     - name: run tests
       run: "npx codeceptjs run -c test/codecept.puppeteer.conf.js --debug"
 
