@@ -5,7 +5,7 @@ module.exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
-      url: 'http://localhost:8000',
+      url: 'http://0.0.0.0:8000',
       show: false,
       chrome: {
         args: [

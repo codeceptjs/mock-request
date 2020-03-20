@@ -7,7 +7,7 @@ class WebDriverConnector {
     this.options = options;
   }
 
-  async connect() {
+  async connect(title) {
     const { browser } = this.WebDriver;
     await browser.execute(pollyWebDriver.setup, title);
     await new Promise(res => setTimeout(res, 1000));
@@ -51,6 +51,7 @@ class WebDriverConnector {
   }  
 
   async disconnect() {
+    if (!this.browser) return; // already disconnected
     await this.browser.execute(pollyWebDriver.stopMocking);
     delete this.browser;
   }
