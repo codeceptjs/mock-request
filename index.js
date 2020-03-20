@@ -7,23 +7,23 @@ const { container } = codeceptjs;
  * 
  * MockRequest helper works in these [modes](https://netflix.github.io/pollyjs/#/configuration?id=mode):
  * 
- * * passthrough (default) - mock whitelisted set of requests
- * * record - record all requests into file
- * * replay - replay all recorded requests from file
+ * * passthrough (default) - mock prefefined HTTP requests
+ * * record - record all requests into a file
+ * * replay - replay all recorded requests from a file
  * 
  * Combining record/replay modes allows testing websites with large datasets. 
  * 
- * To use in passthrough mode just set rules to mock requests and they will be automatically intercepted and replaced:
+ * To use in passthrough mode set rules to mock requests and they will be automatically intercepted and replaced:
  * 
  * ```js
  * // default mode
  * I.mockRequest('GET', '/api/users', '[]');
  * ```
  * 
- * In record-replay mode start mocking when requests need to be recorded/replayed, and stop when you don't need to block requests anymore:
+ * In record-replay mode start mocking to make HTTP requests recorded/replayed, and stop when you don't need to block requests anymore:
  * 
  * ```js
- * // record or replay mode
+ * // record or replay all XHR for /users page
  * I.startMocking();
  * I.amOnPage('/users');
  * I.stopMocking();
