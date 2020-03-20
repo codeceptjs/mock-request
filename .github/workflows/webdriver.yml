@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/checkout@v2        
       with:
-        repository: git@github.com:Codeception/CodeceptJS.git
+        repository: Codeception/CodeceptJS.git
         path: codeceptjs    
     - name: Use Node.js ${{ matrix.node-version }}    
       uses: actions/setup-node@v1
