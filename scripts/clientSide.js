@@ -102,20 +102,20 @@ const pollyClientSide = {
   },
   isPollyObjectInitialized: () => window.polly && window.polly.server,
   stopMocking: async () => {
-    await polly.stop();
+    await window.polly.stop();
     delete window.polly;
   },
   flush: async() => {
     await polly.flush();
   },
   record: () => {
-    polly.record();
+    window.polly.record();
   },
   passthrough: () => {
-    polly.passthrough();
+    window.polly.passthrough();
   },  
   replay: () => {
-    polly.replay();
+    window.polly.replay();
   }    
 
 };

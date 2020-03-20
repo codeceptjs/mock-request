@@ -4,7 +4,7 @@ module.exports.config = {
   output: './output',
   helpers: {
     WebDriver: {
-      url: 'http://localhost:8000',
+      url: 'http://0.0.0.0:8000',
       browser: 'chrome',
       // host: TestHelper.seleniumHost(),
       // port: TestHelper.seleniumPort(),
@@ -15,7 +15,9 @@ module.exports.config = {
       //   },
       // },
     },
-    MockRequest: {},
+    MockRequestHelper: {
+      require: '../index.js'
+    },
   },
   include: {},
   bootstrap: done => setTimeout(done, 5000), // let's wait for selenium
