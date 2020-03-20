@@ -22,7 +22,7 @@ class WebDriverConnector {
     if (!await this.isConnected()) return this.connect();
   }
 
-  async mock(method, oneOrMoreUrls, dataOrStatusCode, additionalData) {
+  async mockRequest(method, oneOrMoreUrls, dataOrStatusCode, additionalData) {
     const webDriverIOConfigUrl = this.WebDriver && this.WebDriver.options.url;
     await this.browser.execute(
       pollyWebDriver.mockRequest,
