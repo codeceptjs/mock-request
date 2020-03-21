@@ -53,8 +53,53 @@ const { container } = codeceptjs;
  *    }
  * }
  * ```
- *
+ * 
  * [Polly config options](https://netflix.github.io/pollyjs/#/configuration?id=configuration) can be passed as well:
+ * 
+ * ```js
+ * // sample options
+ * helpers: {
+ *   MockRequest: {
+ *      mode: record,
+ *      recordIfMissing: true,
+ *      recordFailedRequests: false,
+ *      expiresIn: null,
+ *      matchRequestsBy: {
+ *        // configure which requests should be matched
+ *      },
+ *      persisterOptions: {
+ *        keepUnusedRequests: false
+ *        fs: {
+ *          recordingsDir: './data/requests',
+ *        },
+ *     },
+ *   }
+ * }
+ * ```
+ * 
+ * ---
+ * 
+ * **TROUBLESHOOTING**: Puppeteer does not mock requests in headless mode: 
+ * 
+ * Problem: equest mocking does not work and in debug mode you see this in output:
+ * 
+ * ```
+ * Access to fetch at {url} from origin {url} has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+ * ```
+ * Solution: update Puppeteer config to include `--disable-web-security` arguments:
+ * 
+ * ```js
+ *  Puppeteer: {
+ *    show: false,
+ *    chrome: {
+ *      args: [
+ *        '--disable-web-security',
+ *      ],
+ *    },
+ *  },
+ * ```
+ * 
+ * ---
  * 
  * #### With Puppeteer for Record & Replay
  * 
@@ -155,23 +200,36 @@ class MockRequest {
    * In record mode starts recording of all requests.
    * In replay mode blocks all requests and replaces them with saved.
    * 
-   * If inside one test you plan to record/replay requests in several places, provide title as the parameter: 
+   * If inside one test you plan to record/replay requests in several places, provide [recording name](https://netflix.github.io/pollyjs/#/api?id=recordingname) as the parameter.
    * 
-   * ```
+   * ```js
    * // start mocking requests for a test
    * I.startMocking(); 
    * 
    * // start mocking requests for main page
    * I.startMocking('main-page');
+   * // do actions
    * I.stopMocking();
    * I.startMocking('login-page');
    * ``` 
    *
+   * To update [PollyJS configuration](https://netflix.github.io/pollyjs/#/configuration) use secon argument:
+   * 
+   * ```js
+   * I.startMocking('users-loaded', {
+   *    matchRequestsBy: {
+   *      url: {
+   *        host: 'https',
+   *      }
+   *    }
+   * })
+   * ```
+   *
    * @param {*} title
    */
-  async startMocking(title = 'Test') {
+  async startMocking(title = 'Test', config = {}) {
     this._initializeConnector();
-    await this.connector.connect(title);
+    await this.connector.connect(title, config);
   }   
 
   /**

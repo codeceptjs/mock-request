@@ -1,12 +1,19 @@
-# MockRequest helper for CodeceptJS
+# MockRequest helper for CodeceptJS 
+
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcodecept-js%2Fmock-request%2Fbadge&style=popout)](https://actions-badge.atrox.dev/codecept-js/mock-request/goto)
 
 > Replacement for built-in "MockRequest" helper of CodeceptJS v2.
 
-👻 Implements HTTP request mocking via [PollyJS library](https://netflix.github.io/pollyjs/#/) for [CodeceptJS](https://codecept.io).
+👻 Implements HTTP request mocking, record & replay via [PollyJS](https://netflix.github.io/pollyjs/#/) for [CodeceptJS](https://codecept.io). 
+
+Use it to:
+
+* 📼 Record & Replay HTTP requests
+* 📲 Replace server responses
+* ⛔ Block third party integrations: analytics, chats, support systems. 
+
 
 Works with Puppeteer & WebDriver helpers of [CodeceptJS](https://codecept.io).
-
-> This helper will also install [PollyJS](https://netflix.github.io/pollyjs/) with [Puppeteer adapter](https://netflix.github.io/pollyjs/#/adapters/puppeteer?id=puppeteer-adapter) and [Filesystem persister](https://netflix.github.io/pollyjs/#/persisters/fs?id=file-system-persister).
 
 ## API
 

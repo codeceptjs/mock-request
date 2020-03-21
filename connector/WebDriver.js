@@ -8,7 +8,7 @@ class WebDriverConnector {
     this.options = options;
   }
 
-  async connect(title) {
+  async connect(title, config) {
     const { browser } = this.WebDriver;
     await browser.execute(pollyWebDriver.setup, title);
     await new Promise(res => setTimeout(res, 1000));

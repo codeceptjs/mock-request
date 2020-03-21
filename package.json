@@ -1,10 +1,10 @@
 {
   "name": "@codeceptjs/mock-request",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Mocking requests with PollyJS for CodeceptJS",
   "main": "index.js",
   "scripts": {
-    "publish": "npm publish --access public",
+    "publish": "npm run docs & npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "npx documentation readme index.js --section=API --shallow"
   },

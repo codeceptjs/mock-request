@@ -18,7 +18,7 @@ class PuppeteerConnector {
     Polly.register(adapter);    
   }
 
-  async connect(title) {
+  async connect(title, config = {}) {
     
     await this.page.setRequestInterception(true);
 
@@ -37,7 +37,7 @@ class PuppeteerConnector {
     };
     
     this.page.on('close', () => this.polly.stop());
-    this.polly = new Polly(title, { ...defaultConfig, ...this.options });
+    this.polly = new Polly(title, { ...defaultConfig, ...this.options, ...config });
     this.polly.server
       .any()
       .on('error', (request, error) => output.debug(`Errored ➞ ${request.method} ${request.url}: ${error}`))
