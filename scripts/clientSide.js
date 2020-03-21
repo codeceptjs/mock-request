@@ -11,21 +11,11 @@ const pollyClientSide = {
 
     for (const url of fetchUrls) {
       const script = document.createElement('script');
-      script.onload = initializePolly;
       script.type = 'text/javascript';
       script.src = url;
       document.getElementsByTagName('head')[0].appendChild(script);
-    }
+    }    
 
-    async function initializePolly() {
-      window.PollyJS = await window['@pollyjs/core'];
-      PollyJS.Polly.register(window['@pollyjs/adapter-fetch']);
-      PollyJS.Polly.register(window['@pollyjs/adapter-xhr']);
-      window.polly = new PollyJS.Polly(title, {
-        mode: 'passthrough',
-        adapters: ['fetch', 'xhr'],
-      });
-    }
   },
   mockRequest: (method, oneOrMoreUrls, dataOrStatusCode, additionalData, baseUrl) => {
     const httpMethods = [
@@ -39,7 +29,20 @@ const pollyClientSide = {
       'options',
     ];
 
+    if (!window.polly) {
+      window.PollyJS = window['@pollyjs/core'];
+      window.PollyJS.Polly.register(window['@pollyjs/adapter-fetch']);
+      window.PollyJS.Polly.register(window['@pollyjs/adapter-xhr']);
+      window.polly = new PollyJS.Polly('Test', {
+        mode: 'passthrough',
+        adapters: ['fetch', 'xhr'],
+      });      
+    }
+
     function getRouteHandler(method, urls, baseUrl) {
+      if (!window.polly) {
+        throw new Error('Polly was not initialized');
+      }
       const { server } = window.polly;
       urls = appendBaseUrl(baseUrl, urls);
       method = method.toLowerCase();
@@ -102,20 +105,20 @@ const pollyClientSide = {
   },
   isPollyObjectInitialized: () => window.polly && window.polly.server,
   stopMocking: async () => {
-    await polly.stop();
+    await window.polly.stop();
     delete window.polly;
   },
   flush: async() => {
     await polly.flush();
   },
-  record: () => {
-    polly.record();
+  record: () => {    
+    window.polly.record();
   },
   passthrough: () => {
-    polly.passthrough();
+    window.polly.passthrough();
   },  
   replay: () => {
-    polly.replay();
+    window.polly.replay();
   }    
 
 };

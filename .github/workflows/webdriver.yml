@@ -1,0 +1,42 @@
+name: WebDriver Mocking
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2        
+      with:
+        repository: Codeception/CodeceptJS.git
+        path: codeceptjs    
+    - name: Use Node.js ${{ matrix.node-version }}    
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: docker run -d --net=host selenium/standalone-chrome    
+    - name: install required packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install php
+    - name: npm install
+      run: |
+        npm install
+    - name: start a server
+      run: "php -S 127.0.0.1:8000 -t codeceptjs/test/data/app &"
+    - name: tests
+      run: "npx codeceptjs run -c test/codecept.webdriver.conf.js --debug"
+      

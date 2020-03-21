@@ -1,3 +1,19 @@
+function shouldAppendBaseUrl(url) {
+  return !/^\w+\:\/\//.test(url);
+}
+
+function trimUrl(url) {
+  const firstChar = url.substr(1);
+  if (firstChar === '/') {
+    url = url.slice(1);
+  }
+  return url;
+}
+
+function joinUrl(baseUrl, url) {
+  return shouldAppendBaseUrl(url) ? `${baseUrl}/${trimUrl(url)}` : url;
+}
+
 function appendBaseUrl(baseUrl = '', oneOrMoreUrls) {
   if (typeof baseUrl !== 'string') {
     throw new Error(`Invalid value for baseUrl: ${baseUrl}`);

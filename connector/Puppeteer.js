@@ -52,7 +52,7 @@ class PuppeteerConnector {
   }
 
   async checkConnection() {
-    if (!await this.isConnected()) return this.connect();
+    if (!await this.isConnected()) return this.connect('Test');
   }
 
   async mockRequest(method, oneOrMoreUrls, dataOrStatusCode, additionalData = null) {
@@ -62,7 +62,7 @@ class PuppeteerConnector {
       this.polly.server,
       method,
       oneOrMoreUrls,
-      this.config.url || puppeteerConfigUrl,
+      this.options.url || puppeteerConfigUrl,
     );
 
     if (typeof dataOrStatusCode === 'number') {

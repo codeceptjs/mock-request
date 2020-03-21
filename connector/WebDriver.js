@@ -1,4 +1,5 @@
 const pollyWebDriver = require('../scripts/clientSide');
+const { output } = codeceptjs;
 
 class WebDriverConnector {
 
@@ -7,7 +8,7 @@ class WebDriverConnector {
     this.options = options;
   }
 
-  async connect() {
+  async connect(title) {
     const { browser } = this.WebDriver;
     await browser.execute(pollyWebDriver.setup, title);
     await new Promise(res => setTimeout(res, 1000));
@@ -22,7 +23,7 @@ class WebDriverConnector {
     if (!await this.isConnected()) return this.connect();
   }
 
-  async mock(method, oneOrMoreUrls, dataOrStatusCode, additionalData) {
+  async mockRequest(method, oneOrMoreUrls, dataOrStatusCode, additionalData) {
     const webDriverIOConfigUrl = this.WebDriver && this.WebDriver.options.url;
     await this.browser.execute(
       pollyWebDriver.mockRequest,
@@ -51,7 +52,12 @@ class WebDriverConnector {
   }  
 
   async disconnect() {
-    await this.browser.execute(pollyWebDriver.stopMocking);
+    if (!this.browser) return; // already disconnected
+    try {
+      await this.browser.execute(pollyWebDriver.stopMocking);
+    } catch (err) {
+      output.log('Disconnected, cant clear');
+    }
     delete this.browser;
   }
 }

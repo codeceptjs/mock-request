@@ -17,9 +17,10 @@
   "author": "Michael Bodnarchuk @davert",
   "license": "ISC",
   "devDependencies": {
+    "codeceptjs": "^2.5.0",
+    "documentation": "^11.0.1",
     "puppeteer": "^2.1.1",
-    "webdriverio": "^5.22.3",
-    "documentation": "^11.0.1"
+    "webdriverio": "^5.22.3"
   },
   "dependencies": {
     "@pollyjs/adapter-puppeteer": "^4.0.2",
