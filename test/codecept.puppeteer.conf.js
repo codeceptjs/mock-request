@@ -9,6 +9,7 @@ module.exports.config = {
       show: false,
       chrome: {
         args: [
+          '--disable-web-security',
           '--no-sandbox',
           '--disable-setuid-sandbox',
         ],

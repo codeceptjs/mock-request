@@ -27,8 +27,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Start selenoid
-      uses: Xotabu4/selenoid-github-action@v1        
+    - run: docker run -d selenium/standalone-chrome --net=host     
     - name: install required packages
       run: |
         sudo apt-get update

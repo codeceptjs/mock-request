@@ -4,7 +4,7 @@ module.exports.config = {
   output: './output',
   helpers: {
     WebDriver: {
-      url: 'http://0.0.0.0:8000',
+      url: 'http://127.0.0.1:8000',
       browser: 'chrome',
       // host: TestHelper.seleniumHost(),
       // port: TestHelper.seleniumPort(),
