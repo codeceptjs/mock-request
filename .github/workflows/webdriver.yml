@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: docker run -d selenium/standalone-chrome --net=host     
+    - run: docker run -d --net=host selenium/standalone-chrome    
     - name: install required packages
       run: |
         sudo apt-get update
