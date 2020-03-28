@@ -24,7 +24,7 @@ Scenario('change response data @Puppeteer @WebDriver', (I) => {
   I.stopMocking();
 });
 
-Scenario('change response data @Puppeteer @WebDriver', (I) => {
+Scenario('change response data via mockServer @Puppeteer @WebDriver', (I) => {
   I.amOnPage('/form/fetch_call');
   I.mockServer(server => {
     server.get('https://jsonplaceholder.typicode.com/*').

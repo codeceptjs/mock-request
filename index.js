@@ -64,9 +64,6 @@ const { container } = codeceptjs;
  *      recordIfMissing: true,
  *      recordFailedRequests: false,
  *      expiresIn: null,
- *      matchRequestsBy: {
- *        // configure which requests should be matched
- *      },
  *      persisterOptions: {
  *        keepUnusedRequests: false
  *        fs: {
@@ -81,7 +78,7 @@ const { container } = codeceptjs;
  * 
  * **TROUBLESHOOTING**: Puppeteer does not mock requests in headless mode: 
  * 
- * Problem: equest mocking does not work and in debug mode you see this in output:
+ * Problem: request mocking does not work and in debug mode you see this in output:
  * 
  * ```
  * Access to fetch at {url} from origin {url} has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
@@ -101,38 +98,6 @@ const { container } = codeceptjs;
  * 
  * ---
  * 
- * #### With Puppeteer for Record & Replay
- * 
- * Set mode via enironment variable, `replay` mode by default:
- *
- *
- * ```js
- * // enable replay mode
- * helpers: {
- *  Puppeteer: {
- *    // regular Puppeteer config here
- *  },
- *  MockRequest: {
- *     require: '@codeceptjs/mock-request',
- *     mode: process.env.MOCK_MODE || 'replay',
- *  },
- * }
- * ```
- * 
- * Toggle record/replay mode by passing `MOCK_MODE` environment variable when running.
- * 
- * Record HTTP interactions:
- * 
- * ```
- * MOCK_MODE=record npx codeceptjs run --debug
- * ```
- * 
- * Interactions between `I.startMocking()` and `I.stopMocking()` will be recorded and saved to `data/requests` directory.
- * To replay them launch tests without environment variable:
- * 
- * ```
- * npx codeceptjs run --debug
- * ```
  * 
  * #### With WebDriver
  * 
@@ -151,12 +116,90 @@ const { container } = codeceptjs;
  * 
  * > Record/Replay mode is not tested in WebDriver but technically can work with [REST Persister](https://netflix.github.io/pollyjs/#/examples?id=rest-persister)
  *
- * ### Usage
+ * ## Usage
  * 
- * Enable mocking requests with `I.startMocking()`, disable mocking with `I.stopMocking()`.
- * To set up custom rules to intercept requests use `I.mockRequest()`
+ * ### 👻 Mock Requests
+ * 
+ * To intercept API requests and mock them use following API
+ * 
+ * * [startMocking()](#startMocking) - to enable request interception
+ * * [mockRequest()](#mockRequest) - to define mock in a simple way
+ * * [mockServer()](#mockServer) - to use PollyJS server API to define complex mocks
+ * * [stopMocking()](#stopMocking) - to stop intercepting requests and disable mocks.
+ * 
+ * Calling `mockRequest` or `mockServer` will start mocking, if it was not enabled yet.
+ * 
+ * ```js
+ * I.startMocking(); // optionally
+ * I.mockRequest('/google-analytics/*path', 200);
+ * // return an empty successful response 
+ * I.mockRequest('GET', '/api/users', 200);
+ * // mock users api
+ * I.mockServer(server => {
+ *   server.get('https://server.com/api/users*').
+ *     intercept((req, res) => { res.status(200).json(users);
+ *   });
+ * });
+ * I.click('Get users);
+ * I.stopMocking();
+ * ```
+ *
+ * #### 📼 Record & Replay 
+ * 
+ * > At this moment works only with Puppeteer
+ * 
+ * Record & Replay mode allows you to record all xhr & fetch requests and save them to file.
+ * On next runs those requests can be replayed. 
+ * By default, it stores all passed requests, but this behavior can be customized with `I.mockServer`
+ * 
+ * Set mode via enironment variable, `replay` mode by default:
  *
  *
+ * ```js
+ * // enable replay mode
+ * helpers: {
+ *  Puppeteer: {
+ *    // regular Puppeteer config here
+ *  },
+ *  MockRequest: {
+ *     require: '@codeceptjs/mock-request',
+ *     mode: process.env.MOCK_MODE || 'replay',
+ *  },
+ * }
+ * ```
+ * 
+ * Interactions between `I.startMocking()` and `I.stopMocking()` will be recorded and saved to `data/requests` directory.
+ * 
+ * ```
+ * I.startMocking() // record requests under 'Test' name
+ * I.startMocking('users') // record requests under 'users' name
+ * ```
+ * 
+ * Use `I.mockServer()` to customize which requests should be recorded and under which name:
+ * 
+ * ```
+ * I.startMocking();
+ * I.mockServer((server) => {
+ *   // mock request only from ap1.com and api2.com and
+ *   // store recording into two different files
+ *   server.any('https://api1.com/*').passthrough(false).recordingName('api1');
+ *   server.any('https://api2.com/*').passthrough(false).recordingName('api2');
+ * });
+ * ```
+ * 
+ * To stop request recording/replaying use `I.stopMocking()`.
+ * 
+ * 🎥 To record HTTP interactions execute tests with MOCK_MODE environment variable set as "record":
+ * 
+ * ```
+ * MOCK_MODE=record npx codeceptjs run --debug
+ * ```
+ * 
+ * 📼 To replay them launch tests without environment variable:
+ * 
+ * ```
+ * npx codeceptjs run --debug
+ * ```
  */
 class MockRequest {
   constructor(config) {
@@ -217,7 +260,7 @@ class MockRequest {
    * 
    * ```js
    * I.startMocking('users-loaded', {
-   *    path: '/api'
+   *    recordFailedRequests: true
    * })
    * ```
    *
@@ -228,6 +271,20 @@ class MockRequest {
     await this.connector.connect(title, config);
   }   
 
+  /**
+  * Use PollyJS [Server Routes API](https://netflix.github.io/pollyjs/#/server/overview) to declare mocks via callback function:
+  * 
+  * ```js
+  * // basic usage
+  * server.get('/api/v2/users').intercept((req, res) => {
+  *   res.sendStatus(200).json({ users });
+  * });
+  * 
+  * // passthrough requests to "/api/v2"
+  * server.get('/api/v1').passthrough();
+  * ```
+  * 
+  */
   async mockServer(configFn) {
     this._initializeConnector();
     await this.connector.checkConnection();

@@ -1,6 +1,6 @@
 {
   "name": "@codeceptjs/mock-request",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mocking requests with PollyJS for CodeceptJS",
   "main": "index.js",
   "scripts": {

@@ -19,7 +19,7 @@ class PuppeteerConnector {
     Polly.register(adapter);    
   }
 
-  async connect(title, config = {}) {
+  async connect(title, configOpts = {}) {
     
 
     const defaultConfig = {
@@ -29,9 +29,6 @@ class PuppeteerConnector {
         puppeteer: { 
           page: this.Puppeteer.page,
           requestResourceTypes: ['xhr', 'fetch'],
-          path: config.path,
-          host: config.host,
-          filter: config.filter,
         },
       },
       logging: false,
@@ -44,7 +41,7 @@ class PuppeteerConnector {
     };
     
     this.Puppeteer.page.setRequestInterception(true);
-    this.polly = new Polly(title, { ...defaultConfig, ...this.options, ...config });
+    this.polly = new Polly(title, { ...defaultConfig, ...this.options, ...configOpts });
     this.polly.logger.disconnect();
 
     this.polly.server
@@ -56,8 +53,6 @@ class PuppeteerConnector {
     .on('response', (request) => {
       output.debug(`Request ${request.action} ➞ ${request.method} ${request.url} ${request.response.statusCode} • ${request.responseTime}ms`);        
     });
-
-
   }
 
   async isConnected() {
