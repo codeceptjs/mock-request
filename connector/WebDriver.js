@@ -35,11 +35,18 @@ class WebDriverConnector {
     );
   }
 
-  async mockServer(confgFn) {
+  async mockServer(configFn) {
+    console.log(pollyWebDriver.mockServer.toString());
+    console.log(configFn.toString());
+    try {
     await this.browser.execute(
       pollyWebDriver.mockServer,
-      confgFn.toString()
-    );    
+      configFn.toString().replace('\n', ' ')
+    );   
+    } catch (err) {
+      console.log(err.stack)
+    }
+
   }
 
   async flush() {

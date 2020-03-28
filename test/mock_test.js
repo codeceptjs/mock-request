@@ -1,3 +1,8 @@
+const rimraf = require("rimraf");
+const path = require('path');
+const fs = require('fs');
+const assert = require('assert');
+
 Feature('Mocking');
 
 const fetchPost = response => response.url() === 'https://jsonplaceholder.typicode.com/posts/1';
@@ -27,14 +32,36 @@ Scenario('change response data @Puppeteer @WebDriver', (I) => {
 Scenario('change response data via mockServer @Puppeteer @WebDriver', (I) => {
   I.amOnPage('/form/fetch_call');
   I.mockServer(server => {
-    server.get('https://jsonplaceholder.typicode.com/*').
-      intercept((req, res) => { res.status(200).json({ modified: 'This is modified from mocking' });
+    server.get('https://jsonplaceholder.typicode.com/*').intercept((req, res) => {
+      res.status(200).json({ modified: 'This is modified from mocking' });
     });
-  });
+  }); 
   I.click('GET COMMENTS');
   I.waitForText('This is modified from mocking', 1, '#data');
   I.stopMocking();
 });
+
+Scenario('record & replay request @Puppeteer', async (I) => {
+  rimraf.sync(path.join(__dirname, '../data'));
+  I.amOnPage('/form/fetch_call');
+  I.startMocking('comments', { mode: 'record' });
+
+  I.click('GET COMMENTS');
+  I.wait(1);
+  let email = await I.grabTextFrom(locate('#data').find('tr').at(4).find('td').at(2));
+  await I.stopMocking();
+  assert(fs.existsSync(path.join(__dirname, '../data/requests')), 'recording created');
+
+  I.amOnPage('/form/fetch_call');
+  I.startMocking('comments', { mode: 'replay' });
+  I.click('GET COMMENTS');
+  I.stopMocking();
+
+  let newEmail = await I.grabTextFrom(locate('#data').find('tr').at(4).find('td').at(2));
+  assert.equal(email, newEmail, 'data was not replayed');
+
+});
+
 
 
 Scenario('change response data for multiple requests @Puppeteer @WebDriver', (I) => {

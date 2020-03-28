@@ -103,10 +103,24 @@ const pollyClientSide = {
     const data = dataOrStatusCode;
     return handler.intercept((_, res) => res.send(data));
   },
+
   isPollyObjectInitialized: () => window.polly && window.polly.server,  
-  mockServer(configFn) {
-    (new Function('server', configFn))(window.polly.server);
+  
+  mockServer: (configFn) => {
+ 
+    if (!window.polly) {
+      window.PollyJS = window['@pollyjs/core'];
+      window.PollyJS.Polly.register(window['@pollyjs/adapter-fetch']);
+      window.PollyJS.Polly.register(window['@pollyjs/adapter-xhr']);
+      window.polly = new PollyJS.Polly('Test', {
+        mode: 'passthrough',
+        adapters: ['fetch', 'xhr'],
+      });      
+    }
+ 
+    eval(`(${configFn})(window.polly.server)`);
   },
+
   stopMocking: async () => {
     await window.polly.stop();
     delete window.polly;

@@ -6,6 +6,7 @@
   "scripts": {
     "publish": "npm run docs & npm publish --access public",
     "test": "npx codeceptjs run -c test/codecept.puppeteer.conf.js --debug --grep @Puppeteer",
+    "test-webdriver": "npx codeceptjs run -c test/codecept.webdriver.conf.js --debug --grep @WebDriver",
     "docs": "npx documentation readme index.js --section=API --shallow"
   },
   "keywords": [
@@ -20,6 +21,7 @@
     "codeceptjs": "^2.5.0",
     "documentation": "^11.0.1",
     "puppeteer": "^2.1.1",
+    "rimraf": "^3.0.2",
     "webdriverio": "^5.22.3"
   },
   "dependencies": {

@@ -20,7 +20,6 @@ class PuppeteerConnector {
   }
 
   async connect(title, configOpts = {}) {
-    
 
     const defaultConfig = {
       mode: 'passthrough',
@@ -89,19 +88,19 @@ class PuppeteerConnector {
   }
 
   async record() {
-    this.polly.record();
+    return this.polly.record();
   }
 
   async replay() {
-    this.polly.replay();
+    return this.polly.replay();
   }
 
   async passthrough() {
-    this.polly.passthrough();
+    return this.polly.passthrough();
   }
 
   async flush() {
-    this.polly.flush();
+    return this.polly.flush();
   }
  
   async disconnect() {

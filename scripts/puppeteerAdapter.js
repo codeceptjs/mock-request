@@ -18,6 +18,17 @@ module.exports = class PuppeteerCodeceptJSAdapter extends PuppeteerAdapter {
     await this.persister.recordRequest(pollyRequest);
   }
 
+  async onPassthrough(pollyRequest) {
+    const { page } = this.options;
+    if (! await page.browser().isConnected()) {
+      console.log('page is already closed');
+      return;
+    }
+    const response = await this.passthroughRequest(pollyRequest);
+    await pollyRequest.respond(response);
+  }
+
+
   async respondToRequest(pollyRequest, error) {
     const { request } = pollyRequest.requestArguments;
     const { response } = pollyRequest;

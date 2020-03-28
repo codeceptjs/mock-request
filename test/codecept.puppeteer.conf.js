@@ -15,6 +15,7 @@ module.exports.config = {
         ],
       },
     },
+    FileSystem: {},
     MockRequestHelper: {
       require: '../index.js'
     },
