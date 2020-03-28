@@ -48,6 +48,7 @@ Scenario('record & replay request @Puppeteer', async (I) => {
 
   I.click('GET COMMENTS');
   I.wait(1);
+  I.waitForElement(locate('#data').find('tr').at(4), 10);
   let email = await I.grabTextFrom(locate('#data').find('tr').at(4).find('td').at(2));
   await I.stopMocking();
   assert(fs.existsSync(path.join(__dirname, '../data/requests')), 'recording created');
