@@ -41,13 +41,13 @@ Scenario('change response data via mockServer @Puppeteer @WebDriver', (I) => {
   I.stopMocking();
 });
 
-Scenario('record & replay request @Puppeteer', async (I) => {
+Scenario('record & replay request @Puppeteer', { retries: 3 }, async (I) => {
   rimraf.sync(path.join(__dirname, '../data'));
   I.amOnPage('/form/fetch_call');
   I.startMocking('comments', { mode: 'record' });
 
   I.click('GET COMMENTS');
-  I.wait(1);
+  I.wait(3);
   I.waitForElement(locate('#data').find('tr').at(4), 10);
   let email = await I.grabTextFrom(locate('#data').find('tr').at(4).find('td').at(2));
   await I.stopMocking();
