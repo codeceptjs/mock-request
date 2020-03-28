@@ -8,7 +8,7 @@ const LISTENERS = Symbol();
 
 
 module.exports = class PuppeteerCodeceptJSAdapter extends PuppeteerAdapter {
-  static get name() {
+  static get id() {
     return 'puppeteer';
   }
   async onRecord(pollyRequest) {
@@ -20,7 +20,7 @@ module.exports = class PuppeteerCodeceptJSAdapter extends PuppeteerAdapter {
 
   async onPassthrough(pollyRequest) {
     const { page } = this.options;
-    if (! await page.browser().isConnected()) {
+    if (await page.isClosed()) {
       console.log('page is already closed');
       return;
     }

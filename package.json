@@ -22,11 +22,11 @@
     "documentation": "^11.0.1",
     "puppeteer": "^2.1.1",
     "rimraf": "^3.0.2",
-    "webdriverio": "^5.22.3"
+    "webdriverio": "^5.22.4"
   },
   "dependencies": {
-    "@pollyjs/adapter-puppeteer": "^4.0.2",
-    "@pollyjs/core": "^4.0.2",
-    "@pollyjs/persister-fs": "^4.0.2"
+    "@pollyjs/adapter-puppeteer": "^4.0.4",
+    "@pollyjs/core": "^4.0.4",
+    "@pollyjs/persister-fs": "^4.0.4"
   }
 }
