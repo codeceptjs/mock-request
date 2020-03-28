@@ -217,11 +217,7 @@ class MockRequest {
    * 
    * ```js
    * I.startMocking('users-loaded', {
-   *    matchRequestsBy: {
-   *      url: {
-   *        host: 'https',
-   *      }
-   *    }
+   *    path: '/api'
    * })
    * ```
    *
@@ -231,6 +227,12 @@ class MockRequest {
     this._initializeConnector();
     await this.connector.connect(title, config);
   }   
+
+  async mockServer(configFn) {
+    this._initializeConnector();
+    await this.connector.checkConnection();
+    await this.connector.mockServer(configFn);
+  }
 
   /**
   * Forces record mode for mocking.

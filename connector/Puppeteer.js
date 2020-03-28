@@ -3,6 +3,7 @@ const FSPersister = require('@pollyjs/persister-fs');
 const adapter = require('@pollyjs/adapter-puppeteer');
 const { output } = codeceptjs;
 const { getRouteHandler } = require('../scripts/mock');
+const PuppeteerAdapter = require('../scripts/puppeteerAdapter');
 
 class PuppeteerConnector {
 
@@ -20,14 +21,20 @@ class PuppeteerConnector {
 
   async connect(title, config = {}) {
     
-    await this.page.setRequestInterception(true);
 
     const defaultConfig = {
       mode: 'passthrough',
-      adapters: ['puppeteer'],
+      adapters: [PuppeteerAdapter],
       adapterOptions: {
-        puppeteer: { page: this.page },
+        puppeteer: { 
+          page: this.Puppeteer.page,
+          requestResourceTypes: ['xhr', 'fetch'],
+          path: config.path,
+          host: config.host,
+          filter: config.filter,
+        },
       },
+      logging: false,
       persister: 'fs',
       persisterOptions: {
         fs: {
@@ -36,15 +43,21 @@ class PuppeteerConnector {
       }      
     };
     
-    this.page.on('close', () => this.polly.stop());
+    this.Puppeteer.page.setRequestInterception(true);
     this.polly = new Polly(title, { ...defaultConfig, ...this.options, ...config });
+    this.polly.logger.disconnect();
+
     this.polly.server
-      .any()
-      .on('error', (request, error) => output.debug(`Errored ➞ ${request.method} ${request.url}: ${error}`))
-      .on('response', (request) => {
-        output.debug(`Request ${request.action} ➞ ${request.method} ${request.url} ${request.response.statusCode} • ${request.responseTime}ms`);        
-      });
-    return this.polly;
+    .any()
+    .on('error', (request, error) => {
+      if (error.toString().includes('already handled')) return;
+      output.debug(`Errored ➞ ${request.method} ${request.url}: ${error.message}`);
+    })
+    .on('response', (request) => {
+      output.debug(`Request ${request.action} ➞ ${request.method} ${request.url} ${request.response.statusCode} • ${request.responseTime}ms`);        
+    });
+
+
   }
 
   async isConnected() {
@@ -76,6 +89,10 @@ class PuppeteerConnector {
     return handler.intercept((_, res) => res.send(data));    
   }
 
+  async mockServer(configFn) {
+    configFn(this.polly.server);
+  }
+
   async record() {
     this.polly.record();
   }
@@ -95,7 +112,7 @@ class PuppeteerConnector {
   async disconnect() {
     try {
       await this.polly.stop();
-      await this.page.setRequestInterception(false);
+      await this.Puppeteer.page.setRequestInterception(false);
     } catch (err) {
       output.log('Polly was not disconnected, Puppeteer is already closed');
     }

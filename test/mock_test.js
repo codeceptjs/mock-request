@@ -24,6 +24,19 @@ Scenario('change response data @Puppeteer @WebDriver', (I) => {
   I.stopMocking();
 });
 
+Scenario('change response data @Puppeteer @WebDriver', (I) => {
+  I.amOnPage('/form/fetch_call');
+  I.mockServer(server => {
+    server.get('https://jsonplaceholder.typicode.com/*').
+      intercept((req, res) => { res.status(200).json({ modified: 'This is modified from mocking' });
+    });
+  });
+  I.click('GET COMMENTS');
+  I.waitForText('This is modified from mocking', 1, '#data');
+  I.stopMocking();
+});
+
+
 Scenario('change response data for multiple requests @Puppeteer @WebDriver', (I) => {
   I.amOnPage('/form/fetch_call');
   I.mockRequest(

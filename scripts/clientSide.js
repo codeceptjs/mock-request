@@ -103,7 +103,10 @@ const pollyClientSide = {
     const data = dataOrStatusCode;
     return handler.intercept((_, res) => res.send(data));
   },
-  isPollyObjectInitialized: () => window.polly && window.polly.server,
+  isPollyObjectInitialized: () => window.polly && window.polly.server,  
+  mockServer(configFn) {
+    (new Function('server', configFn))(window.polly.server);
+  },
   stopMocking: async () => {
     await window.polly.stop();
     delete window.polly;

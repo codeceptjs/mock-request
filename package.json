@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "publish": "npm run docs & npm publish --access public",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx codeceptjs run -c test/codecept.puppeteer.conf.js --debug --grep @Puppeteer",
     "docs": "npx documentation readme index.js --section=API --shallow"
   },
   "keywords": [

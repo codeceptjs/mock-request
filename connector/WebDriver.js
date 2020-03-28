@@ -35,6 +35,13 @@ class WebDriverConnector {
     );
   }
 
+  async mockServer(confgFn) {
+    await this.browser.execute(
+      pollyWebDriver.mockServer,
+      confgFn.toString()
+    );    
+  }
+
   async flush() {
     await this.browser.execute(pollyWebDriver.flush);
   }
