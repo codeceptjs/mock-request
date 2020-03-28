@@ -59,7 +59,8 @@ const { container } = codeceptjs;
  * ```js
  * // sample options
  * helpers: {
- *   MockRequest: {
+ *   MockRequestHelper: {
+ *      require: '@codeceptjs/mock-request',
  *      mode: record,
  *      recordIfMissing: true,
  *      recordFailedRequests: false,
