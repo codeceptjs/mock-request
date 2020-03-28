@@ -27,7 +27,7 @@ Works with Puppeteer & WebDriver helpers of [CodeceptJS](https://codecept.io).
         -   [With WebDriver](#with-webdriver)
 -   [Usage](#usage)
     -   [👻 Mock Requests](#-mock-requests)
-        -   [📼 Record & Replay](#-record--replay)
+    -   [📼 Record & Replay](#-record--replay)
     -   [Parameters](#parameters)
     -   [startMocking](#startmocking)
         -   [Parameters](#parameters-1)
@@ -182,7 +182,7 @@ I.click('Get users);
 I.stopMocking();
 ```
 
-##### 📼 Record & Replay
+#### 📼 Record & Replay
 
 > At this moment works only with Puppeteer
 
@@ -207,18 +207,22 @@ helpers: {
 
 Interactions between `I.startMocking()` and `I.stopMocking()` will be recorded and saved to `data/requests` directory.
 
-    I.startMocking() // record requests under 'Test' name
-    I.startMocking('users') // record requests under 'users' name
+```js
+I.startMocking() // record requests under 'Test' name
+I.startMocking('users') // record requests under 'users' name
+```
 
 Use `I.mockServer()` to customize which requests should be recorded and under which name:
 
-    I.startMocking();
-    I.mockServer((server) => {
-      // mock request only from ap1.com and api2.com and
-      // store recording into two different files
-      server.any('https://api1.com/*').passthrough(false).recordingName('api1');
-      server.any('https://api2.com/*').passthrough(false).recordingName('api2');
-    });
+```js
+I.startMocking();
+I.mockServer((server) => {
+  // mock request only from ap1.com and api2.com and
+  // store recording into two different files
+  server.any('https://api1.com/*').passthrough(false).recordingName('api1');
+  server.any('https://api2.com/*').passthrough(false).recordingName('api2');
+});
+```
 
 To stop request recording/replaying use `I.stopMocking()`.
 
@@ -256,6 +260,10 @@ I.startMocking('login-page');
 To update [PollyJS configuration](https://netflix.github.io/pollyjs/#/configuration) use secon argument:
 
 ```js
+// change mode
+I.startMocking('comments', { mode: 'replay' });
+
+// override config
 I.startMocking('users-loaded', {
    recordFailedRequests: true
 })
@@ -278,6 +286,23 @@ server.get('/api/v2/users').intercept((req, res) => {
 
 // passthrough requests to "/api/v2"
 server.get('/api/v1').passthrough();
+```
+
+In record replay mode you can define which routes should be recorded and where to store them:
+
+```js
+I.startMocking('mock');
+I.mockServer((server) => {
+
+  // record requests from cdn1.com and save them to data/recording/xml
+  server.any('https://cdn1.com/*').passthrough(false).recordingName('xml');
+  
+  // record requests from cdn2.com and save them to data/recording/svg
+  server.any('https://cdn2.com/*').passthrough(false).recordingName('svg');
+
+  // record requests from /api and save them to data/recording/mock (default)
+  server.any('/api/*').passthrough(false);
+});
 ```
 
 ##### Parameters
