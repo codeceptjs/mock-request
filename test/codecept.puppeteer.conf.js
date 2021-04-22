@@ -5,7 +5,7 @@ module.exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
-      url: 'http://0.0.0.0:8000',
+      url: 'https://netflix.github.io/pollyjs',
       show: false,
       chrome: {
         args: [

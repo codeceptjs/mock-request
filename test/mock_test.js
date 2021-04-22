@@ -5,43 +5,47 @@ const assert = require('assert');
 
 Feature('Mocking');
 
-const fetchPost = response => response.url() === 'https://jsonplaceholder.typicode.com/posts/1';
+const defaultTimeout = 5;
+const readmeURL = 'https://raw.githubusercontent.com/Netflix/pollyjs/master/README.md';
 
-const fetchComments = response => response.url() === 'https://jsonplaceholder.typicode.com/comments/1';
+const openReadmeButton = {css: '[href="#/README"]'};
 
-const fetchUsers = response => response.url() === 'https://jsonplaceholder.typicode.com/users/1';
 
-Scenario('change statusCode @Puppeteer @WebDriver', (I) => {
-  I.amOnPage('/form/fetch_call');
-  I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/*', 404);
-  I.click('GET POSTS');
-  I.waitForText('Can not load data!', 1, '#data');
-  I.stopMocking();
+
+Scenario('change statusCode @Puppeteer @WebDriver',async ({I}) => {
+  await I.mockRequest('GET', readmeURL, 404);
+  await I.amOnPage('/');
+  
+  await I.waitForVisible(openReadmeButton, defaultTimeout);
+  await I.click(openReadmeButton);
+  await I.waitForText('404 - Not found', defaultTimeout, '#main');
+  await I.stopMocking();
 });
 
-Scenario('change response data @Puppeteer @WebDriver', (I) => {
-  I.amOnPage('/form/fetch_call');
-  I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/*', {
-    modified: 'This is modified from mocking',
-  });
-  I.click('GET COMMENTS');
-  I.waitForText('This is modified from mocking', 1, '#data');
-  I.stopMocking();
+Scenario('change response data @Puppeteer @WebDriver', async ({I}) => {
+  await I.mockRequest('GET', readmeURL, 'This is modified from mocking');
+  await I.amOnPage('/');
+  await I.waitForVisible(openReadmeButton, defaultTimeout);
+  await I.click(openReadmeButton);
+  await I.waitForText('This is modified from mocking', defaultTimeout, '#main');
+  await I.stopMocking();
 });
 
-Scenario('change response data via mockServer @Puppeteer @WebDriver', (I) => {
-  I.amOnPage('/form/fetch_call');
-  I.mockServer(server => {
-    server.get('https://jsonplaceholder.typicode.com/*').intercept((req, res) => {
-      res.status(200).json({ modified: 'This is modified from mocking' });
+Scenario('change response data via mockServer @Puppeteer @WebDriver', async ({I}) => {
+  await I.mockServer(server => {
+    server.get(readmeURL).intercept((req, res) => {
+      res.status(200).json('This is modified from mocking');
     });
   }); 
-  I.click('GET COMMENTS');
-  I.waitForText('This is modified from mocking', 1, '#data');
-  I.stopMocking();
+  await I.amOnPage('/');
+  await I.waitForVisible('[class="cover-main"]', defaultTimeout);
+  await I.waitForVisible(openReadmeButton, defaultTimeout);
+  await I.click(openReadmeButton);
+  await I.waitForText('This is modified from mocking', defaultTimeout, '#main');
+  await I.stopMocking();
 });
 
-Scenario('record & replay request @Puppeteer', { retries: 3 }, async (I) => {
+xScenario('record & replay request @Puppeteer', { retries: 3 }, async ({I}) => {
   rimraf.sync(path.join(__dirname, '../data'));
   I.amOnPage('/form/fetch_call');
   I.startMocking('comments', { mode: 'record' });
@@ -65,14 +69,14 @@ Scenario('record & replay request @Puppeteer', { retries: 3 }, async (I) => {
 
 
 
-Scenario('change response data for multiple requests @Puppeteer @WebDriver', (I) => {
+xScenario('change response data for multiple requests @Puppeteer @WebDriver', ({I}) => {
   I.amOnPage('/form/fetch_call');
   I.mockRequest(
     'GET',
     [
-      'https://jsonplaceholder.typicode.com/posts/*',
-      'https://jsonplaceholder.typicode.com/comments/*',
-      'https://jsonplaceholder.typicode.com/users/*',
+      'https://jsonplaceholder.typicode.com/posts/',
+      'https://jsonplaceholder.typicode.com/comments/',
+      'https://jsonplaceholder.typicode.com/users/',
     ],
     {
       modified: 'MY CUSTOM DATA',
@@ -90,9 +94,9 @@ Scenario('change response data for multiple requests @Puppeteer @WebDriver', (I)
 // we should replace it with other service - https://jsonplaceholder.typicode.com not works
 xScenario(
   'should request for original data after mocking stopped @Puppeteer @WebDriver',
-  (I) => {
+  ({I}) => {
     I.amOnPage('/form/fetch_call');
-    I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/*', {
+    I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/', {
       comment: 'CUSTOM _uniqueId_u4805sd23',
     });
     I.click('GET COMMENTS');

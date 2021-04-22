@@ -1,4 +1,5 @@
 const { Polly } = require('@pollyjs/core');
+const { MODES } = require('@pollyjs/utils');
 const FSPersister = require('@pollyjs/persister-fs');
 const adapter = require('@pollyjs/adapter-puppeteer');
 const { output } = codeceptjs;
@@ -22,7 +23,7 @@ class PuppeteerConnector {
   async connect(title, configOpts = {}) {
 
     const defaultConfig = {
-      mode: 'passthrough',
+      mode: MODES.PASSTHROUGH,
       adapters: [PuppeteerAdapter],
       adapterOptions: {
         puppeteer: { 
@@ -39,7 +40,7 @@ class PuppeteerConnector {
       }      
     };
     
-    this.Puppeteer.page.setRequestInterception(true);
+    await this.Puppeteer.page.setRequestInterception(true);
     this.polly = new Polly(title, { ...defaultConfig, ...this.options, ...configOpts });
     this.polly.logger.disconnect();
 
