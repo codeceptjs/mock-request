@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcodecept-js%2Fmock-request%2Fbadge&style=popout)](https://actions-badge.atrox.dev/codecept-js/mock-request/goto)
 
-> Replacement for built-in "MockRequest" helper of CodeceptJS v2.
+> Playwright engine is not supported by this helper. Use native [Playwright API to mock requests](https://codecept.io/playwright/#mocking-network-requests). 
 
 👻 Implements HTTP request mocking, record & replay via [PollyJS](https://netflix.github.io/pollyjs/#/) for [CodeceptJS](https://codecept.io). 
 
