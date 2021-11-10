@@ -2,6 +2,7 @@ const rimraf = require("rimraf");
 const path = require('path');
 const fs = require('fs');
 const assert = require('assert');
+const { I } = inject();
 
 Feature('Mocking');
 
@@ -11,7 +12,7 @@ const fetchComments = response => response.url() === 'https://jsonplaceholder.ty
 
 const fetchUsers = response => response.url() === 'https://jsonplaceholder.typicode.com/users/1';
 
-Scenario('change statusCode @Puppeteer @WebDriver', (I) => {
+Scenario('change statusCode @Puppeteer @WebDriver', () => {
   I.amOnPage('/form/fetch_call');
   I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/*', 404);
   I.click('GET POSTS');
@@ -19,7 +20,7 @@ Scenario('change statusCode @Puppeteer @WebDriver', (I) => {
   I.stopMocking();
 });
 
-Scenario('change response data @Puppeteer @WebDriver', (I) => {
+Scenario('change response data @Puppeteer @WebDriver', () => {
   I.amOnPage('/form/fetch_call');
   I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/*', {
     modified: 'This is modified from mocking',
@@ -29,7 +30,7 @@ Scenario('change response data @Puppeteer @WebDriver', (I) => {
   I.stopMocking();
 });
 
-Scenario('change response data via mockServer @Puppeteer @WebDriver', (I) => {
+Scenario('change response data via mockServer @Puppeteer @WebDriver', () => {
   I.amOnPage('/form/fetch_call');
   I.mockServer(server => {
     server.get('https://jsonplaceholder.typicode.com/*').intercept((req, res) => {
@@ -41,7 +42,7 @@ Scenario('change response data via mockServer @Puppeteer @WebDriver', (I) => {
   I.stopMocking();
 });
 
-Scenario('record & replay request @Puppeteer', { retries: 3 }, async (I) => {
+Scenario('record & replay request @Puppeteer', { retries: 3 }, async () => {
   rimraf.sync(path.join(__dirname, '../data'));
   I.amOnPage('/form/fetch_call');
   I.startMocking('comments', { mode: 'record' });
@@ -65,7 +66,7 @@ Scenario('record & replay request @Puppeteer', { retries: 3 }, async (I) => {
 
 
 
-Scenario('change response data for multiple requests @Puppeteer @WebDriver', (I) => {
+Scenario('change response data for multiple requests @Puppeteer @WebDriver', () => {
   I.amOnPage('/form/fetch_call');
   I.mockRequest(
     'GET',
@@ -90,7 +91,7 @@ Scenario('change response data for multiple requests @Puppeteer @WebDriver', (I)
 // we should replace it with other service - https://jsonplaceholder.typicode.com not works
 xScenario(
   'should request for original data after mocking stopped @Puppeteer @WebDriver',
-  (I) => {
+  () => {
     I.amOnPage('/form/fetch_call');
     I.mockRequest('GET', 'https://jsonplaceholder.typicode.com/*', {
       comment: 'CUSTOM _uniqueId_u4805sd23',
