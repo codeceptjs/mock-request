@@ -3,24 +3,24 @@ name: Puppeteer Mocking
 on:
   push:
     branches:
-      - master
+      - 'master'
   pull_request:
     branches:
-      - master
+      - '**'
 
 jobs:
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [20.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - name: install required packages
@@ -29,7 +29,7 @@ jobs:
         sudo apt-get install libgbm-dev libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgdk-pixbuf2.0-0 libegl1 libgles2 libevent-2.1-6 libnotify4 libxslt1.1
         sudo apt-get install xvfb
         sudo apt-get install php
-    - uses: actions/checkout@v2        
+    - uses: actions/checkout@v3   
       with:
         repository: codeceptjs/codeceptjs.git
         path: codeceptjs
