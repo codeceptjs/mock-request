@@ -18,7 +18,8 @@ jobs:
         node-version: [20.x]
 
     steps:
-    - uses: actions/checkout@v3      
+    - uses: actions/checkout@v3    
+    - uses: actions/checkout@v3
       with:
         repository: codeceptjs/codeceptjs.git
         path: codeceptjs    
